@@ -3,6 +3,7 @@
 ![docs.rs](https://img.shields.io/docsrs/signvec)
 ![License](https://img.shields.io/crates/l/signvec)
 ![GitHub Workflow Status](https://github.com/b-vitamins/signvec/actions/workflows/rust.yml/badge.svg)
+
 `SignVec` extends the capabilities of the traditional `Vec` by providing additional functionalities to efficiently track and manipulate elements based on their sign (positive or negative) using the `Signable` trait.
 
 ## Features
@@ -136,7 +137,7 @@ The table below is a summary of benchmark results for the specialized functional
 
 | Operation          | `SignVec`    | `Vec`          | Speedup         |
 |--------------------|--------------|----------------|-----------------|
-| `set`              | 3.85         | -              | -               |
+| `set`              | 3.85 ns      | -              | -               |
 | `count`            | 225.74 ps    | 153.38 ns      | ~679x faster    |
 | `random`           | 2.01 ns      | 1.12 µs        | ~556x faster    |
 | `indices`          | 86.42 ns     | 1.11 µs        | ~12.8x faster   |

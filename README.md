@@ -7,11 +7,9 @@
 `SignVec` extends the capabilities of the traditional `Vec` by providing additional functionalities to efficiently track and manipulate elements based on their sign (positive or negative) using the `Signable` trait.
 
 ## Features
-- **Sign-Aware Element Tracking**: Tracks the sign of elements for optimized sign-specific operations.
-- **Efficient Updates**: Maintains high performance even with frequent modifications.
-- **Versatile Operations**: Provides methods for element counting, access, and manipulation based on sign.
-- **Flexible Interface**: Offers both safe and unsafe methods to accommodate various requirements.
-- **Custom Type Support**: Seamlessly integrates with user-defined types via the `Signable` trait.
+- Tracks the sign of elements for optimized sign-specific operations.
+- Provides methods for element counting, access, and manipulation based on sign.
+- Integrates with user-defined types via the `Signable` trait.
 
 ## Usage: Basic operations
 

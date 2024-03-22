@@ -78,13 +78,15 @@ where
     where
         T: Signable + Clone,
     {
-        for e in other.iter() {
+        let start_len = self.vals.len();
+        other.iter().enumerate().for_each(|(index, e)| {
+            let vals_index = start_len + index;
             match e.sign() {
-                Sign::Plus => self.pos.insert(self.vals.len()),
-                Sign::Minus => self.neg.insert(self.vals.len()),
+                Sign::Plus => self.pos.insert(vals_index),
+                Sign::Minus => self.neg.insert(vals_index),
             };
             self.vals.push(e.clone());
-        }
+        });
     }
     /// Returns a raw pointer to the underlying data of this `SignVec`.
     ///
@@ -223,8 +225,8 @@ where
             if self.vals[read] != self.vals[read - 1] {
                 // Move non-duplicate to the 'write' position if necessary.
                 if read != write {
-                    self.vals[write] = self.vals[read].clone(); // Assume T: Clone for simplicity
-                                                                // Update pos and neg based on the moved element's sign.
+                    self.vals[write] = self.vals[read].clone();
+                                                               
                     if self.vals[read].sign() == Sign::Plus {
                         self.pos.remove(&read);
                         self.pos.insert(write);
@@ -1049,31 +1051,36 @@ where
         }
 
         let old_len = self.vals.len();
-        if new_len > old_len {
-            // SAFETY: The caller must ensure that the elements at old_len..new_len are properly initialized.
-            self.vals.set_len(new_len);
-            let vals_ptr = self.vals.as_mut_ptr();
-            (old_len..new_len).for_each(|i| {
-                // SAFETY: This dereference is safe under the assumption that elements at old_len..new_len are initialized.
-                match (*vals_ptr.add(i)).sign() {
-                    Sign::Plus => {
-                        self.pos.insert(i);
+        match new_len.cmp(&old_len) {
+            std::cmp::Ordering::Greater => {
+                // SAFETY: The caller must ensure that the elements at old_len..new_len are properly initialized.
+                self.vals.set_len(new_len);
+                let vals_ptr = self.vals.as_mut_ptr();
+                (old_len..new_len).for_each(|i| {
+                    // SAFETY: This dereference is safe under the assumption that elements at old_len..new_len are initialized.
+                    match unsafe { &*vals_ptr.add(i) }.sign() {
+                        Sign::Plus => {
+                            self.pos.insert(i);
+                        },
+                        Sign::Minus => {
+                            self.neg.insert(i);
+                        },
                     }
-                    Sign::Minus => {
-                        self.neg.insert(i);
-                    }
-                }
-            });
-        } else if new_len < old_len {
-            // If the new length is less than the old length, remove indices that are no longer valid.
-            (new_len..old_len).for_each(|i| {
-                self.pos.remove(&i);
-                self.neg.remove(&i);
-            });
-            // SAFETY: This is safe as we're only reducing the vector's length, not accessing any elements.
-            self.vals.set_len(new_len);
+                });
+            },
+            std::cmp::Ordering::Less => {
+                // If the new length is less than the old length, remove indices that are no longer valid.
+                (new_len..old_len).for_each(|i| {
+                    self.pos.remove(&i);
+                    self.neg.remove(&i);
+                });
+                // SAFETY: This is safe as we're only reducing the vector's length, not accessing any elements.
+                self.vals.set_len(new_len);
+            },
+            std::cmp::Ordering::Equal => {
+                // If new_len == old_len, there's no need to do anything.
+            },
         }
-        // If new_len == old_len, there's no need to do anything.
     }
 
     /// Sets the value at the specified index.
@@ -2368,16 +2375,16 @@ mod tests {
     fn test_append() {
         // Test appending positive elements
         let mut vec = svec![-1];
-        let mut other = vec![2, -3];
-        vec.append(&mut other);
+        let other = vec![2, -3];
+        vec.append(&other);
         assert_eq!(vec.as_slice(), &[-1, 2, -3]);
         assert_eq!(vec.count(Sign::Plus), 1);
         assert_eq!(vec.count(Sign::Minus), 2);
 
         // Test appending negative elements
         let mut vec = svec![];
-        let mut other = vec![-2, 3];
-        vec.append(&mut other);
+        let other = vec![-2, 3];
+        vec.append(&other);
         assert_eq!(vec.as_slice(), &[-2, 3]);
         assert_eq!(vec.count(Sign::Plus), 1);
         assert_eq!(vec.count(Sign::Minus), 1);
@@ -2914,8 +2921,8 @@ mod tests {
         assert_eq!(vec.len(), 3);
         assert!(vec.indices(Sign::Minus).contains(&2));
 
-        let mut other = vec![3, -2];
-        vec.append(&mut other);
+        let other = vec![3, -2];
+        vec.append(&other);
         assert_eq!(vec.len(), 5);
         assert!(vec.indices(Sign::Plus).contains(&3));
         assert!(vec.indices(Sign::Minus).contains(&4));
@@ -3058,7 +3065,7 @@ mod tests {
     // Test FromIterator<&T> for SignVec<T>
     #[test]
     fn from_iterator_ref() {
-        let items = vec![1, -1, 2, -2];
+        let items = [1, -1, 2, -2];
         let sign_vec: SignVec<i32> = items.iter().collect();
         assert_eq!(sign_vec.vals, vec![1, -1, 2, -2]);
         // Additional checks can be added for pos and neg sets.

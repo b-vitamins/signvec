@@ -50,7 +50,7 @@ fn bench_signvec_comparison(c: &mut Criterion) {
         sign_vec.push(val);
         vec.push(val);
     });
-    let operations = vec![Sign::Plus, Sign::Minus];
+    let operations = [Sign::Plus, Sign::Minus];
 
     // Benchmark for `count`
     for op in operations.iter().cloned() {

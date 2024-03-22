@@ -1,10 +1,10 @@
 [package]
 name = "signvec"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Ayan Das <ayand@iisc.ac.in>"]
 license = "GPL-3.0"
-description = "Vector implementation for fast, sign-based manipulation of dynamic collections under heavy mutation."
+description = "Vector implementation for fast, sign-based manipulation of dynamic collections."
 repository = "https://github.com/b-vitamins/signvec"
 documentation = "https://docs.rs/signvec"
 readme = "README.md"
@@ -14,14 +14,11 @@ homepage = "https://github.com/b-vitamins/signvec"
 
 [dependencies]
 nanorand = "0.7.0"
-fastset = "0.2.0"
+fastset = "0.2.1"
 serde = { version = "1.0.197", features = ["derive"] }
 
 [dev-dependencies]
-criterion = "0.3.1"
-
-[features]
-default = []
+criterion = "0.4.0"
 
 [[bench]]
 name = "signvec"

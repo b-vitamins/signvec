@@ -133,13 +133,13 @@ fn main() {
 
 The table below is a summary of benchmark results for the specialized functionality of `SignVec`. The times are averaged between operations on positive and negative elements.
 
-| Operation          | `SignVec`    | `Vec`          | Speedup         |
-|--------------------|--------------|----------------|-----------------|
-| `set`              | 3.85 ns      | -              | -               |
-| `count`            | 225.74 ps    | 153.38 ns      | ~679x faster    |
-| `random`           | 2.01 ns      | 1.12 µs        | ~556x faster    |
-| `indices`          | 86.42 ns     | 1.11 µs        | ~12.8x faster   |
-| `values`           | 579.37 ns    | 1.13 µs        | ~1.95x faster   |
+| Operation | `SignVec` | `Vec`     | Speedup       |
+|-----------|-----------|-----------|---------------|
+| `set`     | 1.37 ns   | -         | -             |
+| `count`   | 225.74 ps | 153.38 ns | ~679x faster  |
+| `indices` | 86.42 ns  | 1.11 µs   | ~12.8x faster |
+| `values`  | 579.37 ns | 1.13 µs   | ~1.95x faster |
+| `random`  | 1.28 ns   | 950.84 ns | ~742x faster  |
 
 Benchmarks were conducted on a machine with the following specifications:
 - Processor: AMD Ryzen™ 5 5600G with Radeon™ Graphics x 12

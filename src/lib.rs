@@ -22,7 +22,6 @@
 //! use nanorand::{Rng, WyRand};
 //! use signvec::{svec, Sign, SignVec};
 //!
-//! fn main() {
 //!     let mut vector = svec![1, -2, 3, -4];
 //!
 //!     assert_eq!(vector.len(), 4);
@@ -59,7 +58,6 @@
 //!     if let Some(random_positive) = vector.random(Sign::Plus, &mut rng) {
 //!         println!("Random positive value: {}", random_positive);
 //!     }
-//! }
 //! ```
 //!
 //! ## Usage: Monte Carlo simulations
@@ -71,7 +69,6 @@
 //! use signvec::{SignVec, svec, Sign, Signable};
 //! use nanorand::{WyRand, Rng};
 //!
-//! fn main() {
 //!     let mut energies = svec![1.0, -1.0, 1.5, -1.5, 0.5, -0.5];
 //!     let mut rng = WyRand::new();
 //!
@@ -95,7 +92,6 @@
 //!     }
 //!
 //!     println!("Final energy distribution: {:?}", energies);
-//! }
 //! ```
 //!
 //! ## Usage: Portfolio management
@@ -108,7 +104,6 @@
 //! use signvec::{SignVec, Sign, svec};
 //! use nanorand::WyRand;
 //!
-//! fn main() {
 //!     let mut portfolio = svec![150.0, -200.0, 300.0, -50.0, 400.0];
 //!     let market_conditions = vec![1.05, 0.95, 1.10, 1.00, 1.03];
 //!
@@ -135,20 +130,19 @@
 //!     } else {
 //!         println!("No standout assets for additional investment at the moment.");
 //!     }
-//! }
 //! ```
 //!
 //! ## Benchmarks
 //!
 //! The table below is a summary of benchmark results for the specialized functionality of `SignVec`. The times are averaged between operations on positive and negative elements.
 //!
-//! | Operation          | `SignVec`    | `Vec`          | Speedup         |
-//! |--------------------|--------------|----------------|-----------------|
-//! | `set`              | 3.85 ns      | -              | -               |
-//! | `count`            | 225.74 ps    | 153.38 ns      | ~679x faster    |
-//! | `random`           | 2.01 ns      | 1.12 µs        | ~556x faster    |
-//! | `indices`          | 86.42 ns     | 1.11 µs        | ~12.8x faster   |
-//! | `values`           | 579.37 ns    | 1.13 µs        | ~1.95x faster   |
+//! | Operation | `SignVec` | `Vec`     | Speedup       |
+//! |-----------|-----------|-----------|---------------|
+//! | `set`     | 1.37 ns   | -         | -             |
+//! | `count`   | 225.74 ps | 153.38 ns | ~679x faster  |
+//! | `indices` | 86.42 ns  | 1.11 µs   | ~12.8x faster |
+//! | `values`  | 579.37 ns | 1.13 µs   | ~1.95x faster |
+//! | `random`  | 1.28 ns   | 950.84 ns | ~742x faster  |
 //! 
 //! Benchmarks were conducted on a machine with the following specifications:
 //! - Processor: AMD Ryzen™ 5 5600G with Radeon™ Graphics x 12

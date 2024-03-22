@@ -27,6 +27,24 @@ fn bench_signvec_operations(c: &mut Criterion) {
         })
     });
 
+    group.bench_function("random", |b| {
+        b.iter(|| {
+            sign_vec.random(black_box(Sign::Plus), black_box(&mut rng));
+        })
+    });
+
+    group.bench_function("random_pos", |b| {
+        b.iter(|| {
+            sign_vec.random_pos(black_box(&mut rng));
+        })
+    });
+
+    group.bench_function("random_neg", |b| {
+        b.iter(|| {
+            sign_vec.random_neg(black_box(&mut rng));
+        })
+    });
+
     group.bench_function("sync", |b| {
         b.iter(|| {
             sign_vec.sync();

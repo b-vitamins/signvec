@@ -136,13 +136,16 @@
 //!
 //! The table below is a summary of benchmark results for the specialized functionality of `SignVec`. The times are averaged between operations on positive and negative elements.
 //!
-//! | Operation | `SignVec` | `Vec`     | Speedup       |
-//! |-----------|-----------|-----------|---------------|
-//! | `set`     | 1.37 ns   | -         | -             |
-//! | `count`   | 225.74 ps | 153.38 ns | ~679x faster  |
-//! | `indices` | 86.42 ns  | 1.11 µs   | ~12.8x faster |
-//! | `values`  | 579.37 ns | 1.13 µs   | ~1.95x faster |
-//! | `random`  | 1.28 ns   | 950.84 ns | ~742x faster  |
+//!| Operation       | `SignVec` | `Vec`     | Speedup       |
+//!|-----------------|-----------|-----------|---------------|
+//!| `count`         | 225.74 ps | 153.38 ns | ~679x faster  |
+//!| `indices`       | 86.42 ns  | 1.11 µs   | ~12.8x faster |
+//!| `values`        | 579.37 ns | 1.13 µs   | ~1.95x faster |
+//!| `random`        | 857.86 ps | 950.84 ns | ~1000x faster |
+//!| `random_pos`    | 680.44 ps | -         | -             |
+//!| `random_neg`    | 651.46 ps | -         | -             |
+//!| `set`           | 1.36 ns   | -         | -             |
+//!| `set_unchecked` | 1.25 ns   | -         | -             |
 //! 
 //! Benchmarks were conducted on a machine with the following specifications:
 //! - Processor: AMD Ryzen™ 5 5600G with Radeon™ Graphics x 12

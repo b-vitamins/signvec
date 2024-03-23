@@ -27,9 +27,15 @@ fn bench_signvec_operations(c: &mut Criterion) {
         })
     });
 
-    group.bench_function("random", |b| {
+    group.bench_function("random (Sign::Plus)", |b| {
         b.iter(|| {
             sign_vec.random(black_box(Sign::Plus), black_box(&mut rng));
+        })
+    });
+
+    group.bench_function("random (Sign::Minus)", |b| {
+        b.iter(|| {
+            sign_vec.random(black_box(Sign::Minus), black_box(&mut rng));
         })
     });
 
@@ -42,6 +48,54 @@ fn bench_signvec_operations(c: &mut Criterion) {
     group.bench_function("random_neg", |b| {
         b.iter(|| {
             sign_vec.random_neg(black_box(&mut rng));
+        })
+    });
+
+    group.bench_function("count (Sign::Plus)", |b| {
+        b.iter(|| {
+            black_box(sign_vec.count(black_box(Sign::Plus)));
+        })
+    });
+
+    group.bench_function("count (Sign::Minus)", |b| {
+        b.iter(|| {
+            black_box(sign_vec.count(black_box(Sign::Minus)));
+        })
+    });
+
+    group.bench_function("count_pos", |b| {
+        b.iter(|| {
+            black_box(sign_vec.count_pos());
+        })
+    });
+
+    group.bench_function("count_neg", |b| {
+        b.iter(|| {
+            black_box(sign_vec.count_neg());
+        })
+    });
+
+    group.bench_function("indices (Sign::Plus)", |b| {
+        b.iter(|| {
+            black_box(sign_vec.indices(black_box(Sign::Plus)));
+        })
+    });
+
+    group.bench_function("indices (Sign::Minus)", |b| {
+        b.iter(|| {
+            black_box(sign_vec.indices(black_box(Sign::Minus)));
+        })
+    });
+
+    group.bench_function("indices_pos", |b| {
+        b.iter(|| {
+            black_box(sign_vec.indices_pos());
+        })
+    });
+
+    group.bench_function("indices_neg", |b| {
+        b.iter(|| {
+            black_box(sign_vec.indices_neg());
         })
     });
 

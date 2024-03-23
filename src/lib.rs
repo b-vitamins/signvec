@@ -134,18 +134,34 @@
 //!
 //! ## Benchmarks
 //!
-//! The table below is a summary of benchmark results for the specialized functionality of `SignVec`. The times are averaged between operations on positive and negative elements.
+//! The table below is a summary of benchmark results for the specialized functionality of `SignVec`.
 //!
-//!| Operation       | `SignVec` | `Vec`     | Speedup       |
-//!|-----------------|-----------|-----------|---------------|
-//!| `count`         | 225.74 ps | 153.38 ns | ~679x faster  |
-//!| `indices`       | 86.42 ns  | 1.11 µs   | ~12.8x faster |
-//!| `values`        | 579.37 ns | 1.13 µs   | ~1.95x faster |
-//!| `random`        | 857.86 ps | 950.84 ns | ~1000x faster |
-//!| `random_pos`    | 680.44 ps | -         | -             |
-//!| `random_neg`    | 651.46 ps | -         | -             |
-//!| `set`           | 1.36 ns   | -         | -             |
-//!| `set_unchecked` | 1.25 ns   | -         | -             |
+//! | Operation         | `SignVec`      | `Vec`     | Speedup        |
+//! |-------------------|----------------|-----------|----------------|
+//! | `set`             | 1.3922 ns      | -         | -              |
+//! | `set_unchecked`   | 1.3873 ns      | -         | -              |
+//! | `random` (Plus)   | 822.90 ps      | -         | -              |
+//! | `random` (Minus)  | 829.92 ps      | -         | -              |
+//! | `random_pos`      | 652.96 ps      | -         | -              |
+//! | `random_neg`      | 687.77 ps      | -         | -              |
+//! | `count` (Plus)    | 453.21 ps      | -         | -              |
+//! | `count` (Minus)   | 458.70 ps      | -         | -              |
+//! | `count_pos`       | 229.73 ps      | -         | -              |
+//! | `count_neg`       | 228.44 ps      | -         | -              |
+//! | `indices` (Plus)  | 465.04 ps      | -         | -              |
+//! | `indices` (Minus) | 461.85 ps      | -         | -              |
+//! | `indices_pos`     | 226.99 ps      | -         | -              |
+//! | `indices_neg`     | 225.83 ps      | -         | -              |
+//! | `sync`            | 61.208 µs      | -         | -              |
+//! | `count`[^1]       | 225.74 ps      | 153.38 ns | ~679x faster   |
+//! | `indices`[^2]     | 86.42 ns       | 1.11 µs   | ~12.8x faster  |
+//! | `values`[^3]      | 579.37 ns      | 1.13 µs   | ~1.95x faster  |
+//! | `random`[^4]      | 857.86 ps      | 950.84 ns | ~1106x faster  |
+//!
+//! [^1]: The `count_pos` and `count_neg` benchmarks are used here for comparison as they represent the optimized paths for counting elements by sign.
+//! [^2]: The `indices_pos` and `indices_neg` benchmarks are presented as the optimized methods for retrieving indices by sign.
+//! [^3]: The `values` operation does not have a direct counterpart in the provided benchmarks but is included for context.
+//! [^4]: The `random_pos` and `random_neg` benchmarks provide context for the `random` operation's performance when the sign is predetermined.
 //! 
 //! Benchmarks were conducted on a machine with the following specifications:
 //! - Processor: AMD Ryzen™ 5 5600G with Radeon™ Graphics x 12

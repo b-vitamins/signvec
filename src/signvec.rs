@@ -169,6 +169,7 @@ where
         self.pos.clear();
         self.neg.clear();
     }
+
     /// Returns the number of elements with the specified sign in this `SignVec`.
     ///
     /// This method returns the number of elements in the `pos` set if `sign` is `Sign::Plus`, or
@@ -194,6 +195,44 @@ where
             Sign::Plus => self.pos.len(),
             Sign::Minus => self.neg.len(),
         }
+    }
+
+    /// Returns the number of elements with a positive sign in this `SignVec`.
+    ///
+    /// This method directly returns the number of elements in the `pos` set, 
+    /// providing a more straightforward and slightly faster alternative to calling `count(Sign::Plus)`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use signvec::{SignVec, svec};
+    ///
+    /// let sv = svec![5, -10, 15];
+    ///
+    /// assert_eq!(sv.count_pos(), 2);
+    /// ```
+    #[inline(always)]
+    pub fn count_pos(&self) -> usize {
+        self.pos.len()
+    }
+
+    /// Returns the number of elements with a negative sign in this `SignVec`.
+    ///
+    /// This method directly returns the number of elements in the `neg` set, 
+    /// providing a more straightforward and slightly faster alternative to calling `count(Sign::Minus)`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use signvec::{SignVec, svec};
+    ///
+    /// let sv = svec![5, -10, 15];
+    ///
+    /// assert_eq!(sv.count_neg(), 1);
+    /// ```
+    #[inline(always)]
+    pub fn count_neg(&self) -> usize {
+        self.neg.len()
     }
 
     /// Removes consecutive duplicate elements from this `SignVec`.
@@ -547,6 +586,46 @@ where
             Sign::Plus => &self.pos,
             Sign::Minus => &self.neg,
         }
+    }
+
+    /// Returns a reference to the set of indices with positive signs.
+    ///
+    /// This method provides direct access to the `Set` containing the indices of elements
+    /// with a positive sign in this `SignVec`, bypassing the need to specify the sign.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use signvec::{SignVec, svec};
+    /// use fastset::Set;
+    ///
+    /// let sign_vec = svec![5, -10, 15, -20];
+    ///
+    /// assert_eq!(sign_vec.indices_pos(), &Set::from(&[0, 2]));
+    /// ```
+    #[inline(always)]
+    pub fn indices_pos(&self) -> &Set {
+        &self.pos
+    }
+
+    /// Returns a reference to the set of indices with negative signs.
+    ///
+    /// This method provides direct access to the `Set` containing the indices of elements
+    /// with a negative sign in this `SignVec`, bypassing the need to specify the sign.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use signvec::{SignVec, svec};
+    /// use fastset::Set;
+    ///
+    /// let sign_vec = svec![5, -10, 15, -20];
+    ///
+    /// assert_eq!(sign_vec.indices_neg(), &Set::from(&[1, 3]));
+    /// ```
+    #[inline(always)]
+    pub fn indices_neg(&self) -> &Set {
+        &self.neg
     }
 
     /// Consumes this `SignVec`, returning a boxed slice of its elements.

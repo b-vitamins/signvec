@@ -199,7 +199,7 @@ where
 
     /// Returns the number of elements with a positive sign in this `SignVec`.
     ///
-    /// This method directly returns the number of elements in the `pos` set, 
+    /// This method directly returns the number of elements in the `pos` set,
     /// providing a more straightforward and slightly faster alternative to calling `count(Sign::Plus)`.
     ///
     /// # Examples
@@ -218,7 +218,7 @@ where
 
     /// Returns the number of elements with a negative sign in this `SignVec`.
     ///
-    /// This method directly returns the number of elements in the `neg` set, 
+    /// This method directly returns the number of elements in the `neg` set,
     /// providing a more straightforward and slightly faster alternative to calling `count(Sign::Minus)`.
     ///
     /// # Examples
@@ -265,7 +265,7 @@ where
                 // Move non-duplicate to the 'write' position if necessary.
                 if read != write {
                     self.vals[write] = self.vals[read].clone();
-                                                               
+
                     if self.vals[read].sign() == Sign::Plus {
                         self.pos.remove(&read);
                         self.pos.insert(write);
@@ -1096,7 +1096,7 @@ where
 
     /// Returns a random index of an element with a positive sign.
     ///
-    /// This method is a specializion of the `random` function, for situations 
+    /// This method is a specializion of the `random` function, for situations
     /// where the desired sign (positive, in this case) is known at compile time.
     /// Approximately 25 % faster than calling `random` with `Sign::Plus`
     ///
@@ -1127,7 +1127,7 @@ where
 
     /// Returns a random index of an element with a positive sign.
     ///
-    /// This method is a specializion of the `random` function, for situations 
+    /// This method is a specializion of the `random` function, for situations
     /// where the desired sign (negative, in this case) is known at compile time.
     /// Approximately 25 % faster than calling `random` with `Sign::Minus`
     ///
@@ -1199,13 +1199,13 @@ where
                     match unsafe { &*vals_ptr.add(i) }.sign() {
                         Sign::Plus => {
                             self.pos.insert(i);
-                        },
+                        }
                         Sign::Minus => {
                             self.neg.insert(i);
-                        },
+                        }
                     }
                 });
-            },
+            }
             std::cmp::Ordering::Less => {
                 // If the new length is less than the old length, remove indices that are no longer valid.
                 (new_len..old_len).for_each(|i| {
@@ -1214,10 +1214,10 @@ where
                 });
                 // SAFETY: This is safe as we're only reducing the vector's length, not accessing any elements.
                 self.vals.set_len(new_len);
-            },
+            }
             std::cmp::Ordering::Equal => {
                 // If new_len == old_len, there's no need to do anything.
-            },
+            }
         }
     }
 
@@ -1255,7 +1255,10 @@ where
                 self.vals.len()
             );
         }
-        self.set_unchecked(idx, val);
+        // Safety: We've verified that idx is within bounds above
+        unsafe {
+            self.set_unchecked(idx, val);
+        }
     }
 
     /// Sets the value at the specified index without bounds checking.
@@ -1266,7 +1269,9 @@ where
     ///
     /// # Safety
     ///
-    /// The caller must ensure that `idx` is within the bounds of the vector.
+    /// The caller must ensure that `idx` is within the bounds of the vector. Failure to do so may
+    /// result in undefined behavior, memory corruption, or program crashes due to dereferencing
+    /// out-of-bounds memory and corruption of the internal `pos` and `neg` sets.
     ///
     /// # Examples
     ///
@@ -1281,8 +1286,8 @@ where
     /// assert_eq!(sign_vec, svec![5, 20, 15]);
     /// ```
     #[inline(always)]
-    pub fn set_unchecked(&mut self, idx: usize, mut val: T) {
-        let old_val = unsafe { &mut *self.vals.as_mut_ptr().add(idx) };
+    pub unsafe fn set_unchecked(&mut self, idx: usize, mut val: T) {
+        let old_val = &mut *self.vals.as_mut_ptr().add(idx);
         let old_sign = old_val.sign();
         let new_sign = val.sign();
         std::mem::swap(old_val, &mut val);
@@ -1645,7 +1650,6 @@ where
         SignVecValues::new(self, sign)
     }
 
-
     /// Creates a new empty `SignVec` with the specified capacity.
     ///
     /// This method creates a new empty `SignVec` with the specified `capacity`.
@@ -1733,7 +1737,7 @@ where
 }
 
 #[derive(Debug)]
-pub struct SignVecValues<'a, T> 
+pub struct SignVecValues<'a, T>
 where
     T: 'a + Signable + Clone,
 {
@@ -1742,7 +1746,7 @@ where
     indices_iter: std::slice::Iter<'a, usize>,
 }
 
-impl<'a, T> SignVecValues<'a, T> 
+impl<'a, T> SignVecValues<'a, T>
 where
     T: Signable + Clone,
 {
@@ -1754,11 +1758,14 @@ where
             Sign::Plus => (&sign_vec.pos).into_iter(),
             Sign::Minus => (&sign_vec.neg).into_iter(),
         };
-        SignVecValues { vals_ptr, indices_iter }
+        SignVecValues {
+            vals_ptr,
+            indices_iter,
+        }
     }
 }
 
-impl<'a, T> Iterator for SignVecValues<'a, T> 
+impl<'a, T> Iterator for SignVecValues<'a, T>
 where
     T: 'a + Signable + Clone,
 {
@@ -1766,13 +1773,12 @@ where
 
     #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        self.indices_iter.next().map(|&idx| 
+        self.indices_iter.next().map(|&idx|
             // Safety: The index is assumed to be within bounds, as indices are managed internally
             // and should be valid for the `vals` vector. Accessing the vector's elements
             // via a raw pointer obtained from `as_ptr` assumes that no concurrent modifications
             // occur, and the vector's length does not change during iteration.
-            unsafe { &*self.vals_ptr.add(idx) }
-        )
+            unsafe { &*self.vals_ptr.add(idx) })
     }
 }
 
@@ -2857,7 +2863,9 @@ mod tests {
         let mut vec = svec![1, -2, 3];
         assert_eq!(vec.count(Sign::Plus), 2);
         assert_eq!(vec.count(Sign::Minus), 1);
-        vec.set_unchecked(1, 5); // Change -2 to 5
+        unsafe {
+            vec.set_unchecked(1, 5); // Change -2 to 5
+        }
         assert_eq!(vec.as_slice(), &[1, 5, 3]);
         assert_eq!(vec.count(Sign::Plus), 3);
         assert_eq!(vec.count(Sign::Minus), 0);

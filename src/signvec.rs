@@ -1428,8 +1428,8 @@ where
             );
         }
         let new_vals = self.vals.split_off(at);
-        let mut new_pos = Set::new(new_vals.len());
-        let mut new_neg = Set::new(new_vals.len());
+        let mut new_pos = Set::with_max(new_vals.len());
+        let mut new_neg = Set::with_max(new_vals.len());
         (0..new_vals.len()).for_each(|i| {
             if self.pos.contains(&(at + i)) {
                 self.pos.remove(&(at + i));
@@ -1670,8 +1670,8 @@ where
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             vals: Vec::with_capacity(capacity),
-            pos: Set::new(capacity),
-            neg: Set::new(capacity),
+            pos: Set::with_max(capacity),
+            neg: Set::with_max(capacity),
             _marker: PhantomData,
         }
     }
@@ -1806,8 +1806,8 @@ where
     fn default() -> Self {
         Self {
             vals: Vec::default(),
-            pos: Set::new(DEFAULT_SET_SIZE),
-            neg: Set::new(DEFAULT_SET_SIZE),
+            pos: Set::with_max(DEFAULT_SET_SIZE),
+            neg: Set::with_max(DEFAULT_SET_SIZE),
             _marker: PhantomData,
         }
     }
@@ -2102,8 +2102,8 @@ where
     /// ```
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let mut vec = Vec::new();
-        let mut pos = Set::new(DEFAULT_SET_SIZE);
-        let mut neg = Set::new(DEFAULT_SET_SIZE);
+        let mut pos = Set::with_max(DEFAULT_SET_SIZE);
+        let mut neg = Set::with_max(DEFAULT_SET_SIZE);
 
         for (i, item) in iter.into_iter().enumerate() {
             if item.sign() == Sign::Plus {
@@ -2139,8 +2139,8 @@ where
     /// ```
     fn from_iter<I: IntoIterator<Item = &'a T>>(iter: I) -> Self {
         let mut vec = Vec::new();
-        let mut pos = Set::new(DEFAULT_SET_SIZE);
-        let mut neg = Set::new(DEFAULT_SET_SIZE);
+        let mut pos = Set::with_max(DEFAULT_SET_SIZE);
+        let mut neg = Set::with_max(DEFAULT_SET_SIZE);
 
         for (i, item) in iter.into_iter().enumerate() {
             let cloned_item = item.clone();

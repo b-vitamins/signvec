@@ -162,7 +162,7 @@
 //! [^2]: The `indices_pos` and `indices_neg` benchmarks are presented as the optimized methods for retrieving indices by sign.
 //! [^3]: The `values` operation does not have a direct counterpart in the provided benchmarks but is included for context.
 //! [^4]: The `random_pos` and `random_neg` benchmarks provide context for the `random` operation's performance when the sign is predetermined.
-//! 
+//!
 //! Benchmarks were conducted on a machine with the following specifications:
 //! - Processor: AMD Ryzen™ 5 5600G with Radeon™ Graphics x 12
 //! - Memory: 58.8 GiB
@@ -174,7 +174,10 @@ pub use signvec::SignVec;
 
 /// Enum representing the sign of a number.
 #[derive(Debug, PartialEq, Copy, Clone)]
-pub enum Sign { Plus, Minus }
+pub enum Sign {
+    Plus,
+    Minus,
+}
 
 /// Trait for types that can be classified by a sign.
 pub trait Signable {
@@ -203,9 +206,9 @@ macro_rules! signfrom {
 macro_rules! signable {
     ($($t:ty),*) => {$(
         impl Signable for $t {
-            fn sign(&self) -> Sign { 
-                if *self >= 0 as $t { Sign::Plus } else { Sign::Minus } 
-            } 
+            fn sign(&self) -> Sign {
+                if *self >= 0 as $t { Sign::Plus } else { Sign::Minus }
+            }
         }
     )*};
 }

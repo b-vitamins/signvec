@@ -11,6 +11,9 @@
 - Provides methods for element counting, access, and manipulation based on sign.
 - Integrates with user-defined types via the `Signable` trait.
 
+## Development Setup
+Run `./setup-dev.sh` once with internet to install Rust and fetch dependencies.
+
 ## Usage: Basic operations
 
 ```rust
